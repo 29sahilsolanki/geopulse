@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User{
+  id          String @id @default(uuid())
+  profilePic  String?
+  publicId    String?
+  name        String 
+  email       String @unique
+  auth0Id     String @unique
+  phone       String? @unique
+  role        Role @default(WORKER)
+  department  Department?
+  shifts      Shift[]
+  locationPerimeter LocationPerimeter?
+  access Access @default(DENIED)
+  createdAt   DateTime @default(now())
+}
+
+enum Access {
+  DENIED
+  GRANTED
+}
+
+enum Department{
+  SOFTWARE
+  MEDICAL
+  TECHNICIAN
+  LABORATORY
+  GENERAL
+}
+
+enum Role{
+  MANAGER
+  WORKER
+}
+
+model Shift {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id])
+  clockIn      DateTime  @default(now())
+  clockOut     DateTime?
+  
+  clockInNote  String?
+  clockOutNote  String?
+
+  inLocation String
+  outLocation String?
+
+  latitudeIn   Float
+  longitudeIn  Float
+  
+  latitudeOut  Float?
+  longitudeOut Float?
+
+  status       ShiftStatus @default(CLOCKEDOUT)
+  createdAt   DateTime @default(now())
+}
+
+enum ShiftStatus{
+  CLOCKEDIN
+  CLOCKEDOUT
+}
+
+model LocationPerimeter{
+  id String @id @default(uuid())
+  managerId String @unique
+  manager  User @relation(fields: [managerId], references: [id])
+  locationName String
+  latitude Float
+  longitude Float
+  radiusKm Float
+}
