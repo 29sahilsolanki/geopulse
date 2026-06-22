@@ -32,8 +32,8 @@ export default function GeoFencing() {
 
     if (radius < 100) {
       return toast.info("Allowed radius should be more than 100 Metres..!!");
-    } else if (radius > 2000) {
-      return toast.info("Allowed radius should be less than 2 KM..!!");
+    } else if (radius > 5000) {
+      return toast.info("Allowed radius should be less than 5 KM..!!");
     }
 
     const parameter = {

@@ -33,7 +33,7 @@ export async function PUT(req) {
       );
     }
 
-    if (radius < 100 || radius > 2000) {
+    if (radius < 100 || radius > 5000) {
       return NextResponse.json(
         {
           success: false,
