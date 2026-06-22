@@ -86,6 +86,51 @@ export const ManagerProvider = ({ children }) => {
     grantAccessMutation.mutate(id);
   };
 
+  //update manager details
+  const updateDetailsMutation = useMutation({
+    mutationFn: async (details) => {
+      const url = "/api/manager/update-details";
+      const res = await axios.post(url, details);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      toast.success(data?.message || "Details updated successfully..!!");
+
+      queryClient.invalidateQueries({ queryKey: ["manager-profile"] });
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Update failed..!!");
+    },
+  });
+
+  // wrapper function of manager details
+  const updateManagerDetails = (details, options) => {
+    updateDetailsMutation.mutate(details, options);
+  };
+
+  //----------------------worker image update-----------------------//
+  const updateImageMutation = useMutation({
+    mutationFn: async (formData) => {
+      const url = "/api/manager/update-image";
+      const res = await axios.put(url, formData);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      toast.success(data?.message || "Profile Image updated successfully..!!");
+
+      queryClient.invalidateQueries({ queryKey: ["manager-profile"] });
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Image upload failed..!!");
+      console.log(error);
+    },
+  });
+
+  // wrapper function of manager image
+  const updateProfileImage = (formData, options) => {
+    updateImageMutation.mutate(formData, options);
+  };
+
   // -------------------- 3. Map State Coordinates --------------------//
   const [location, setLocaton] = useState(null);
   const [searchCoords, setSearchCoords] = useState([28.7041, 77.1025]); // Default: Delhi
@@ -110,6 +155,10 @@ export const ManagerProvider = ({ children }) => {
         isSettingGeofence: geoFencingMutation.isPending,
         handleAccessChange,
         isProcessingAccess: grantAccessMutation.isPending,
+        updateManagerDetails,
+        isSavingDetails: updateDetailsMutation.isPending,
+        updateProfileImage,
+        isUploadingImage: updateImageMutation.isPending,
       }}
     >
       {children}

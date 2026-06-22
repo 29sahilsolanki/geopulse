@@ -125,7 +125,7 @@ export const WorkerProvider = ({ children }) => {
     },
   });
 
-  // wrapper function of worker details
+  // wrapper function of worker image
   const updateProfileImage = (formData, options) => {
     updateImageMutation.mutate(formData, options);
   };

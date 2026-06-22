@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@auth0/nextjs-auth0";
+import { useManager } from "@/context/ManagerContext";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -16,10 +16,10 @@ import {
 } from "react-icons/fi";
 
 export default function ManagerNav() {
+  const { manager } = useManager();
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const { user, isLoading } = useUser();
 
   const handleLogout = () => {
     router.push("/auth/logout");
@@ -102,7 +102,7 @@ export default function ManagerNav() {
           {/* RIGHT SIDE: System Tags & Logout Console */}
           <div className="hidden md:flex items-center gap-4">
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest px-3 py-1.5 bg-zinc-950 border border-emerald-500/20 text-emerald-400 rounded-md shadow-inner">
-              {isLoading ? "Loading..." : `Hello ${user.name}`}
+              {`Hello: ${manager?.name || "Loading..."}`}
             </span>
 
             <button
@@ -141,10 +141,10 @@ export default function ManagerNav() {
           </Link>
 
           <Link
-            href="/manager/zones"
+            href="/manager/geo-fencing"
             onClick={() => setIsOpen(false)}
             className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-bold font-mono uppercase tracking-wide ${
-              pathname === "/manager/zones"
+              pathname === "/manager/geo-fencing"
                 ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                 : "text-zinc-500 hover:text-white hover:bg-zinc-900/50"
             }`}
@@ -153,22 +153,10 @@ export default function ManagerNav() {
           </Link>
 
           <Link
-            href="/manager/approvals"
+            href="/manager/manage-workers"
             onClick={() => setIsOpen(false)}
             className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-bold font-mono uppercase tracking-wide ${
-              pathname === "/manager/approvals"
-                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                : "text-zinc-500 hover:text-white hover:bg-zinc-900/50"
-            }`}
-          >
-            <FiClipboard size={16} /> Approvals Ledger
-          </Link>
-
-          <Link
-            href="/manager/team"
-            onClick={() => setIsOpen(false)}
-            className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-bold font-mono uppercase tracking-wide ${
-              pathname === "/manager/team"
+              pathname === "/manager/manage-workers"
                 ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                 : "text-zinc-500 hover:text-white hover:bg-zinc-900/50"
             }`}
@@ -176,9 +164,21 @@ export default function ManagerNav() {
             <FiUsers size={16} /> Manage Workers
           </Link>
 
+          <Link
+            href="/manager/profile"
+            onClick={() => setIsOpen(false)}
+            className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-bold font-mono uppercase tracking-wide ${
+              pathname === "/manager/profile"
+                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                : "text-zinc-500 hover:text-white hover:bg-zinc-900/50"
+            }`}
+          >
+            <FiUser size={16} /> Manage Workers
+          </Link>
+
           <div className="pt-4 border-t border-zinc-900/60 flex items-center justify-between px-4">
             <span className="text-[9px] font-mono tracking-widest text-emerald-500 bg-emerald-500/5 px-2 py-1 rounded border border-emerald-500/10">
-              ROLE: MANAGER
+              {`Hello: ${manager.name || "Loading..."}`}
             </span>
             <button
               onClick={handleLogout}

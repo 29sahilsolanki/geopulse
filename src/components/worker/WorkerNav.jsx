@@ -102,7 +102,7 @@ export default function WorkerNav() {
           {/* RIGHT SIDE: System Tags & Logout Console */}
           <div className="hidden md:flex items-center gap-4">
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest px-3 py-1.5 bg-zinc-950 border border-emerald-500/20 text-emerald-400 rounded-md shadow-inner">
-              {`Hello ${userData?.name || "Loading..."}`}
+              {`Hello: ${userData?.name || "Loading..."}`}
             </span>
 
             <button
@@ -144,7 +144,7 @@ export default function WorkerNav() {
             href="/worker/punch-timings"
             onClick={() => setIsOpen(false)}
             className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-bold font-mono uppercase tracking-wide ${
-              pathname === "/worker/punch"
+              pathname === "/worker/punch-timings"
                 ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                 : "text-zinc-500 hover:text-white hover:bg-zinc-900/50"
             }`}
@@ -156,7 +156,7 @@ export default function WorkerNav() {
             href="/worker/shift-history"
             onClick={() => setIsOpen(false)}
             className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-bold font-mono uppercase tracking-wide ${
-              pathname === "/worker/history"
+              pathname === "/worker/shift-history"
                 ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                 : "text-zinc-500 hover:text-white hover:bg-zinc-900/50"
             }`}
@@ -178,7 +178,7 @@ export default function WorkerNav() {
 
           <div className="pt-4 border-t border-zinc-900/60 flex items-center justify-between px-4">
             <span className="text-[9px] font-mono tracking-widest text-emerald-500 bg-emerald-500/5 px-2 py-1 rounded border border-emerald-500/10">
-              {`Hello ${userData.name || "Loading..."}`}
+              {`Hello: ${userData.name || "Loading..."}`}
             </span>
             <button
               onClick={handleLogout}
