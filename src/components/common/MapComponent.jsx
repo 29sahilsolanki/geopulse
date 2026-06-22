@@ -18,7 +18,7 @@ import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 
 import { useManager } from "@/context/ManagerContext";
-
+import { FiMapPin } from "react-icons/fi";
 // Leaflet Default Icon Configuration
 const DefaultIcon = L.icon({
   iconUrl: iconUrl.src || iconUrl,
@@ -68,13 +68,12 @@ function LocationClick({ setClickCoords, setLocaton }) {
 
 export default function MapComponent() {
   const [query, setQuery] = useState("");
+  const [isLocating, setIsLocating] = useState(false);
 
-  // 🟢 State to handle initial render checks and stable re-mount key keys
   const [isMounted, setIsMounted] = useState(false);
   const [mapKey, setMapKey] = useState("initial-map");
 
-  // 🟢 Core Center Tracking Engine
-  const [mapCenter, setMapCenter] = useState([28.6139, 77.209]); // Default Delhi Fallback
+  const [mapCenter, setMapCenter] = useState([28.6139, 77.209]); // Default Delhi
 
   const {
     location,
@@ -86,12 +85,10 @@ export default function MapComponent() {
     locationPerimeter,
   } = useManager();
 
-  // 🟢 Hook 1: Safely handles Browser Mounting
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // 🟢 Hook 2: Sync locationPerimeter as soon as Context Database loads
   useEffect(() => {
     if (locationPerimeter?.latitude && locationPerimeter?.longitude) {
       const dbCoords = [
@@ -99,12 +96,11 @@ export default function MapComponent() {
         parseFloat(locationPerimeter.longitude),
       ];
       setMapCenter(dbCoords);
-      // Map wrapper ko ek baar force refresh key dete hain backend loads par alignment ke liye
+
       setMapKey(`map-db-${locationPerimeter.latitude}`);
     }
   }, [locationPerimeter]);
 
-  // 🟢 Hook 3: Listen explicitly to search changes and fly viewport
   useEffect(() => {
     if (searchCoords) {
       setMapCenter(searchCoords);
@@ -130,12 +126,51 @@ export default function MapComponent() {
         setSearchCoords(nextCoords);
         setClickCoords(null);
 
-        // Update key on submit to safely append instances without typing crashes
         setMapKey(`map-search-${Date.now()}`);
       }
     } catch (error) {
       console.log(error?.response?.data);
     }
+  };
+
+  const handleCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      return;
+    }
+
+    setIsLocating(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        const currentCoords = [latitude, longitude];
+
+        setClickCoords(currentCoords);
+        setMapCenter(currentCoords);
+        setSearchCoords(null);
+
+        try {
+          const res = await axios.get(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
+          );
+          setLocaton(res.data);
+        } catch (error) {
+          console.error("Error fetching current location name:", error);
+        }
+
+        setMapKey(`map-current-${Date.now()}`);
+        setIsLocating(false);
+      },
+      (error) => {
+        console.error("GPS Error:", error);
+        alert(
+          "Unable to retrieve your current location. Please check GPS permissions.",
+        );
+        setIsLocating(false);
+      },
+      { enableHighAccuracy: true },
+    );
   };
 
   return (
@@ -159,16 +194,37 @@ export default function MapComponent() {
               placeholder="Search target operational area..."
               className="w-full sm:flex-1 rounded-xl border border-slate-200 px-4 py-2.5 outline-none focus:border-emerald-500 text-xs text-slate-700 bg-slate-50/50 shadow-inner"
             />
-            <button
-              type="submit"
-              className="w-full sm:w-auto rounded-xl bg-emerald-500 px-6 py-2.5 font-bold text-xs uppercase tracking-wider text-white hover:bg-emerald-600 transition-colors cursor-pointer shadow-sm shrink-0"
-            >
-              Search
-            </button>
+
+            <div className="flex gap-2 w-full sm:w-auto">
+              <button
+                type="submit"
+                className="flex-1 sm:flex-none rounded-xl bg-emerald-500 px-6 py-2.5 font-bold text-xs uppercase tracking-wider text-white hover:bg-emerald-600 transition-colors cursor-pointer shadow-sm shrink-0"
+              >
+                Search
+              </button>
+
+              <button
+                type="button"
+                onClick={handleCurrentLocation}
+                disabled={isLocating}
+                title="Use Current Location"
+                className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-60"
+              >
+                <FiMapPin
+                  size={16}
+                  className={
+                    isLocating ? "animate-bounce text-emerald-500" : ""
+                  }
+                />
+                <span className="sm:hidden text-xs font-bold uppercase tracking-wider">
+                  GPS
+                </span>
+              </button>
+            </div>
           </div>
         </form>
 
-        {/* ==================== 🗺️ INTERACTIVE MAP CANVAS ==================== */}
+        {/* ==================== INTERACTIVE MAP CANVAS ==================== */}
         <div className="overflow-hidden rounded-xl border border-slate-200 shadow-inner relative w-full h-80 sm:h-96 lg:h-113 z-10 bg-slate-100 flex items-center justify-center">
           {!isMounted ? (
             <div className="text-xs font-semibold text-slate-400 animate-pulse">
@@ -177,7 +233,7 @@ export default function MapComponent() {
           ) : (
             <MapContainer
               key={mapKey}
-              center={mapCenter} // Stable dynamic state connection
+              center={mapCenter}
               zoom={15}
               className="h-full w-full"
             >
@@ -186,7 +242,6 @@ export default function MapComponent() {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
 
-              {/* 🟢 Fly viewport tracking trigger hooks */}
               <ChangeView coords={mapCenter} />
 
               {clickCoords && (
@@ -199,7 +254,6 @@ export default function MapComponent() {
                 </Marker>
               )}
 
-              {/* 🟢 DB content fallback marker representation on first load */}
               {!clickCoords && locationPerimeter?.latitude && (
                 <Marker
                   position={[

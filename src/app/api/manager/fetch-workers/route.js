@@ -32,7 +32,14 @@ export async function GET(req) {
     }
 
     const workers = await prisma.user.findMany({
-      include: { shifts: true },
+      where: { role: "WORKER" },
+      include: {
+        shifts: {
+          orderBy: {
+            clockIn: "desc",
+          },
+        },
+      },
     });
 
     return NextResponse.json({
