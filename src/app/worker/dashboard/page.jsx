@@ -1,7 +1,8 @@
 "use client";
 
 import { useWorker } from "@/context/WorkerContext";
-import Link from "next/link"; // Next.js dynamic single-page route navigation link agent
+import Image from "next/image";
+import Link from "next/link";
 
 export default function WorkerDashboard() {
   const { userData, shiftDetails } = useWorker();
@@ -9,7 +10,7 @@ export default function WorkerDashboard() {
   const latestShift = shiftDetails?.[0];
   const currentStatus = latestShift?.status ?? "CLOCKEDOUT";
 
-  // Weekly Average Login Duration Calculation Engine
+  // Weekly Average Login Duration Calculation
   const getWeeklyAverage = () => {
     if (!shiftDetails || shiftDetails.length === 0) return "0h 0m";
 
@@ -36,36 +37,38 @@ export default function WorkerDashboard() {
 
   return (
     <div className="pt-24 pb-8 px-4 md:px-8 max-w-7xl mx-auto w-full min-h-screen flex flex-col gap-6 text-slate-900">
-      {/* ==================== ⌚ 1. DASHBOARD HEADER BRANDING BLOCK ==================== */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-4">
         <div>
           <h1 className="text-2xl font-black tracking-tight text-slate-900">
-            Welcome back, {userData?.name || "Operator"}
+            Welcome back, {userData?.name || "Loading..."}
           </h1>
           <p className="text-sm text-slate-500 mt-0.5">
             Get a quick update on your recent activities with GeoPulse
           </p>
         </div>
 
-        {/* Profile Identity Widget Sync */}
-        <div className="flex items-center gap-3 bg-white border border-slate-200 rounded-2xl p-3 shadow-sm w-fit">
-          <img
-            src={userData?.profilePic || "https://cdn.auth0.com/avatars/29.png"}
+        {/* ==================== 🌟 FIXED PROFILE WIDGET FOR LAPTOPS ==================== */}
+        <div className="flex items-center gap-3 lg:gap-4 bg-white border border-slate-200 rounded-2xl p-3 lg:p-4 shadow-sm w-fit sm:max-w-xs md:max-w-sm shrink-0 transition-all duration-200 hover:border-slate-300">
+          <Image
+            src={userData?.profilePic || "No image available"}
             alt="User Node"
-            className="w-10 h-10 rounded-full border border-slate-200 object-cover"
+            width={44} // Laptop standard size optimized
+            height={44}
+            unoptimized
+            className="w-11 h-11 rounded-full border border-slate-200 object-cover shrink-0 shadow-sm"
           />
-          <div>
-            <p className="text-sm font-bold text-slate-800 leading-none">
+          <div className="min-w-0 flex-1 pr-1">
+            <p className="text-sm font-black text-slate-800 leading-tight truncate">
               {userData?.name || "System Core"}
             </p>
-            <p className="text-[10px] font-semibold text-slate-400 font-mono mt-1 uppercase tracking-wider">
+            <p className="text-[10px] font-bold text-slate-400 font-mono mt-1 uppercase tracking-wider truncate">
               Role: {userData?.role || "Worker"}
             </p>
           </div>
         </div>
       </div>
 
-      {/* ==================== 📊 2. METRICS CORE PERFORMANCE CARDS GRID ==================== */}
+      {/* CORE PERFORMANCE CARDS GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
         {/* Card A: Weekly Performance Activity */}
         <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm flex items-center gap-4">
@@ -101,7 +104,7 @@ export default function WorkerDashboard() {
           </div>
         </div>
 
-        {/* Card C: Total Registered Historical Count */}
+        {/* Total Attendance Maked */}
         <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm flex items-center gap-4 sm:col-span-2 lg:col-span-1">
           <span className="text-2xl bg-slate-50 p-2.5 rounded-xl border border-slate-100 shadow-inner">
             📅
@@ -117,18 +120,16 @@ export default function WorkerDashboard() {
         </div>
       </div>
 
-      {/* ==================== 🟢 3. HORIZONTAL CONTROL DASHBOARD COLUMNS ==================== */}
-      <div className="flex flex-col lg:flex-row gap-6 items-stretch w-full">
-        {/* LEFT PANEL COLUMN: Quick Links Navigation Redirect Box */}
+      {/* Quick Links Section */}
+      <div className="flex flex-col md:mt-5 lg:flex-row gap-6 items-stretch w-full">
         <div className="w-full lg:w-[42%] bg-slate-50/60 border border-slate-200/50 rounded-2xl p-5 flex flex-col justify-between gap-6">
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200/40 pb-2 mb-4">
               Quick Links
             </h3>
 
-            {/* Quick Navigation Redirect Stacks */}
             <div className="space-y-3">
-              {/* 🟢 NEW ACTION TRIGGER: Punch Your Attendance */}
+              {/* Punch Attendance Link */}
               <Link
                 href="/worker/punch-timings"
                 className="block bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:border-emerald-500/40 hover:shadow-md transition-all border-l-4 border-l-emerald-500"
@@ -148,7 +149,7 @@ export default function WorkerDashboard() {
                 </div>
               </Link>
 
-              {/* View Profile Link (Route path corrected from /punching to /profile) */}
+              {/* View Profile Link */}
               <Link
                 href="/worker/profile"
                 className="block bg-white border border-slate-200 rounded-xl p-4 shadow-sm hover:border-slate-400 hover:shadow-md transition-all"
@@ -191,8 +192,8 @@ export default function WorkerDashboard() {
           </div>
         </div>
 
-        {/* RIGHT PANEL COLUMN: Recent Timeline Activity Log Summary */}
-        <div className="flex-1 bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm flex flex-col justify-between min-h-[320px]">
+        {/* Recent Timeline Activity Log Summary */}
+        <div className="flex-1 bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm flex flex-col justify-between min-h-80">
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 pb-2 mb-4">
               Latest Attendance Record
@@ -205,7 +206,7 @@ export default function WorkerDashboard() {
               </div>
             ) : (
               <div className="space-y-4">
-                {/* Visual Tracker Card for Latest Shift Status */}
+                {/* Latest Shift Status */}
                 <div
                   className={`p-4 rounded-xl border flex flex-col gap-2.5 ${
                     currentStatus === "CLOCKEDIN"
@@ -270,7 +271,7 @@ export default function WorkerDashboard() {
             )}
           </div>
 
-          {/* Bottom Analytics deep navigation link anchor */}
+          {/* Detailed shift history */}
           <div className="text-right mt-4 border-t border-slate-50 pt-3">
             <Link
               href="/worker/shift-history"

@@ -7,12 +7,15 @@ export const ManagerProvider = ({ children }) => {
   //--------------------fetch manager--------------------//
   const [loadingManager, setLoadingManager] = useState(false);
   const [manager, setManager] = useState(null);
+  const [locationPerimeter, setLocationPerimeter] = useState(null);
   const fetchManger = async () => {
     const url = "/api/fetch-manager";
     try {
       setLoadingManager(true);
       const res = await axios.get(url);
       setManager(res?.data?.dbUser);
+      console.log(res?.data);
+      setLocationPerimeter(res?.data?.locationPerimeter);
     } catch (error) {
       console.log(error?.response?.data);
     } finally {
@@ -66,11 +69,10 @@ export const ManagerProvider = ({ children }) => {
     <ManagerContext.Provider
       value={{
         manager,
-        loadingManager,
-        setLoadingManager,
         fetchWorkers,
         workers,
         loadingWorkers,
+        locationPerimeter,
         setLoadingWorkers,
         location,
         setLocaton,

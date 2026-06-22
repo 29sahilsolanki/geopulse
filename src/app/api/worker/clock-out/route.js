@@ -4,20 +4,11 @@ import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { clockOutNote, latitudeOut, longitudeOut, locationName } = body;
     const session = await auth0.getSession();
     const user = session?.user;
 
-    if (!user || !user.email) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Unauthorized, You need to login first..!!",
-        },
-        { status: 401 },
-      );
-    }
+    const body = await req.json();
+    const { clockOutNote, latitudeOut, longitudeOut, locationName } = body;
 
     const dbUser = await prisma.user.findUnique({
       where: {

@@ -19,6 +19,7 @@ export async function GET(req) {
 
     const dbUser = await prisma.user.findUnique({
       where: { email: user.email },
+      include: { locationPerimeter: true },
     });
 
     if (!dbUser || dbUser.role !== "MANAGER") {
@@ -36,6 +37,7 @@ export async function GET(req) {
         success: true,
         message: "Manager details found..!!",
         dbUser,
+        locationPerimeter: dbUser.locationPerimeter,
       },
       { status: 200 },
     );

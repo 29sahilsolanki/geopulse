@@ -12,9 +12,20 @@ export async function proxy(request) {
   }
 
   const isProtectedRoute =
-    pathname.startsWith("/worker") || pathname.startsWith("/manager");
+    pathname.startsWith("/worker") ||
+    pathname.startsWith("/manager") ||
+    pathname.startsWith("/api");
 
   if (!session && isProtectedRoute) {
+    if (pathname.startsWith("/api")) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Unauthorized, You need to login first..!!",
+        },
+        { status: 401 },
+      );
+    }
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 

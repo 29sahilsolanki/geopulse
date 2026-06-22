@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function PUT(req) {
   try {
     const body = await req.json();
-    const { locationName, latitude, longitude, radiusKm } = body;
+    const { locationName, latitude, longitude, radius } = body;
     const session = await auth0.getSession();
     const user = session?.user;
 
@@ -33,20 +33,30 @@ export async function PUT(req) {
       );
     }
 
+    if (radius < 100 || radius > 2000) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Radius must be more that 100mtr and less than 2000mtr..!!",
+        },
+        { status: 400 },
+      );
+    }
+
     const geoFencing = await prisma.locationPerimeter.upsert({
       where: { managerId: dbUser.id },
       update: {
         locationName,
         latitude,
         longitude,
-        radiusKm,
+        radiusMetre: radius,
       },
       create: {
         managerId: dbUser.id,
         locationName,
         latitude,
         longitude,
-        radiusKm,
+        radiusMetre: radius,
       },
     });
 

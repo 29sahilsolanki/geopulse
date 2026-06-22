@@ -84,5 +84,5 @@ model LocationPerimeter{
   locationName String
   latitude Float
   longitude Float
-  radiusKm Float
+  radiusMetre Float
 }

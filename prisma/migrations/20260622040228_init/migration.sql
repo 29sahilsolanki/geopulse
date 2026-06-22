@@ -7,6 +7,9 @@ CREATE TYPE "Department" AS ENUM ('SOFTWARE', 'MEDICAL', 'TECHNICIAN', 'LABORATO
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('MANAGER', 'WORKER');
 
+-- CreateEnum
+CREATE TYPE "ShiftStatus" AS ENUM ('CLOCKEDIN', 'CLOCKEDOUT');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
@@ -28,11 +31,18 @@ CREATE TABLE "User" (
 CREATE TABLE "Shift" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "clockIn" TIMESTAMP(3) NOT NULL,
+    "clockIn" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "clockOut" TIMESTAMP(3),
-    "note" TEXT,
-    "locationIn" JSONB NOT NULL,
-    "locationOut" JSONB,
+    "clockInNote" TEXT,
+    "clockOutNote" TEXT,
+    "inLocation" TEXT NOT NULL,
+    "outLocation" TEXT,
+    "latitudeIn" DOUBLE PRECISION NOT NULL,
+    "longitudeIn" DOUBLE PRECISION NOT NULL,
+    "latitudeOut" DOUBLE PRECISION,
+    "longitudeOut" DOUBLE PRECISION,
+    "status" "ShiftStatus" NOT NULL DEFAULT 'CLOCKEDOUT',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Shift_pkey" PRIMARY KEY ("id")
 );
@@ -41,6 +51,7 @@ CREATE TABLE "Shift" (
 CREATE TABLE "LocationPerimeter" (
     "id" TEXT NOT NULL,
     "managerId" TEXT NOT NULL,
+    "locationName" TEXT NOT NULL,
     "latitude" DOUBLE PRECISION NOT NULL,
     "longitude" DOUBLE PRECISION NOT NULL,
     "radiusKm" DOUBLE PRECISION NOT NULL,

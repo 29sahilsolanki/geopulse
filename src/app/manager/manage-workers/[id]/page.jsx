@@ -163,8 +163,7 @@ export default function WorkerDetails({ params }) {
 
         {shiftHistory.length === 0 ? (
           <div className="text-center py-10 text-slate-400 text-xs font-medium bg-slate-50 border border-dashed border-slate-200 rounded-xl">
-            📋 No historical logs registered inside context files for this
-            resource node.
+            📋 No history logs registered / created...
           </div>
         ) : (
           <div className="flex flex-col gap-4">
@@ -263,16 +262,16 @@ export default function WorkerDetails({ params }) {
               <div className="flex items-center justify-end gap-4 border-t border-slate-100 pt-3">
                 <button
                   type="button"
-                  disabled={startIndex === 0} // Pehle page par disabled
-                  onClick={() => setStartIndex((prev) => prev - 10)} // Seede -10 index backend shift
+                  disabled={startIndex === 0}
+                  onClick={() => setStartIndex((prev) => prev - 10)}
                   className="px-3 py-1.5 border border-slate-200 rounded-xl font-bold bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white cursor-pointer transition active:scale-[0.97]"
                 >
                   Previous
                 </button>
                 <button
                   type="button"
-                  disabled={startIndex + 10 >= shiftHistory.length} // Aakhri page par disabled
-                  onClick={() => setStartIndex((prev) => prev + 10)} // Seede +10 index forward shift
+                  disabled={startIndex + 10 >= shiftHistory.length}
+                  onClick={() => setStartIndex((prev) => prev + 10)}
                   className="px-3 py-1.5 border border-slate-200 rounded-xl font-bold bg-white text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white cursor-pointer transition active:scale-[0.97]"
                 >
                   Next

@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@auth0/nextjs-auth0";
+import { useWorker } from "@/context/WorkerContext";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -9,7 +9,6 @@ import {
   FiMapPin,
   FiActivity,
   FiClock,
-  FiSettings,
   FiUser,
   FiLogOut,
   FiMenu,
@@ -17,10 +16,10 @@ import {
 } from "react-icons/fi";
 
 export default function WorkerNav() {
+  const { userData } = useWorker();
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const { user, isLoading } = useUser();
 
   const handleLogout = () => {
     router.push("/auth/logout");
@@ -46,7 +45,6 @@ export default function WorkerNav() {
             </Link>
           </div>
 
-          {/* MIDDLE: Manual Links Matrix (No Array, No Map - Pure Simple JSX) */}
           <div className="hidden md:flex items-center space-x-1.5">
             {/* 1. Dashboard Link */}
             <Link
@@ -104,7 +102,7 @@ export default function WorkerNav() {
           {/* RIGHT SIDE: System Tags & Logout Console */}
           <div className="hidden md:flex items-center gap-4">
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest px-3 py-1.5 bg-zinc-950 border border-emerald-500/20 text-emerald-400 rounded-md shadow-inner">
-              {isLoading ? "Loading..." : `Hello ${user.name}`}
+              {`Hello ${userData?.name || "Loading..."}`}
             </span>
 
             <button
@@ -143,7 +141,7 @@ export default function WorkerNav() {
           </Link>
 
           <Link
-            href="/worker/punch"
+            href="/worker/punch-timings"
             onClick={() => setIsOpen(false)}
             className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-bold font-mono uppercase tracking-wide ${
               pathname === "/worker/punch"
@@ -155,7 +153,7 @@ export default function WorkerNav() {
           </Link>
 
           <Link
-            href="/worker/history"
+            href="/worker/shift-history"
             onClick={() => setIsOpen(false)}
             className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-bold font-mono uppercase tracking-wide ${
               pathname === "/worker/history"
@@ -178,21 +176,9 @@ export default function WorkerNav() {
             <FiUser size={16} /> Profile
           </Link>
 
-          <Link
-            href="/worker/settings"
-            onClick={() => setIsOpen(false)}
-            className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-bold font-mono uppercase tracking-wide ${
-              pathname === "/worker/settings"
-                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                : "text-zinc-500 hover:text-white hover:bg-zinc-900/50"
-            }`}
-          >
-            <FiSettings size={16} /> Settings
-          </Link>
-
           <div className="pt-4 border-t border-zinc-900/60 flex items-center justify-between px-4">
             <span className="text-[9px] font-mono tracking-widest text-emerald-500 bg-emerald-500/5 px-2 py-1 rounded border border-emerald-500/10">
-              ROLE: WORKER
+              {`Hello ${userData.name || "Loading..."}`}
             </span>
             <button
               onClick={handleLogout}

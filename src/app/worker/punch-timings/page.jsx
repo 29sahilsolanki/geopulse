@@ -4,7 +4,13 @@ import { useWorker } from "@/context/WorkerContext";
 import { useState, useEffect } from "react";
 
 export default function Punching() {
-  const { punchClockIn, punchClockOut, shiftDetails } = useWorker();
+  const {
+    punchClockIn,
+    isClockingIn,
+    punchClockOut,
+    isClockingOut,
+    shiftDetails,
+  } = useWorker();
   const [currentTime, setCurrentTime] = useState("");
   const [currentDate, setCurrentDate] = useState("");
   const [clockInNote, setClockInNote] = useState("");
@@ -45,12 +51,11 @@ export default function Punching() {
           longitudeIn: position.coords.longitude,
           status: "CLOCKEDIN",
         };
-        try {
-          await punchClockIn(payload);
-          setClockInNote("");
-        } catch (error) {
-          console.error("Failed to execute your request..!!", error);
-        }
+        punchClockIn(payload, {
+          onSuccess: () => {
+            setClockInNote("");
+          },
+        });
       },
       (error) => console.error(error.message),
     );
@@ -66,26 +71,21 @@ export default function Punching() {
           longitudeOut: position.coords.longitude,
           status: "CLOCKEDOUT",
         };
-        try {
-          await punchClockOut(payload);
-          setClockOutNote("");
-        } catch (error) {
-          console.error("Failed to execute your request..!!", error);
-        }
+        punchClockOut(payload, {
+          onSuccess: () => {
+            setClockOutNote("");
+          },
+        });
       },
       (error) => console.error(error.message),
     );
   };
 
   return (
-    /* 🟢 Outer spacing expanded for comfortable laptop padding grids */
     <div className="w-full min-h-screen bg-slate-50/50 pt-20 pb-5 px-6 md:px-8 flex items-start justify-center">
-      {/* 🎯 Master Frame: Width expanded to max-w-7xl and padding to p-8 for a big prominent UI layout */}
       <div className="max-w-7xl w-full bg-white border border-slate-200/80 rounded-3xl shadow-2xl p-8 flex flex-col lg:flex-row gap-8 items-stretch transition-all duration-300">
-        {/* ==================== LEFT COLUMN: CONTROLS & CLOCK ==================== */}
-        {/* 🟢 Column space expanded to 42% for bigger buttons and wide notes fields */}
+        {/*  CONTROLS & CLOCK  */}
         <div className="w-full lg:w-[42%] bg-slate-50/60 border border-slate-200/50 rounded-2xl p-6 flex flex-col justify-between items-center text-center">
-          {/* Big Live Digital Clock View */}
           <div className="w-full py-4 border-b border-slate-200/40">
             <p className="text-slate-400 text-sm font-bold uppercase tracking-wider">
               {currentDate || "Loading System Node..."}
@@ -95,36 +95,40 @@ export default function Punching() {
             </h2>
           </div>
 
-          {/* Action Trigger Buttons: Scaled up to full 56px configurations */}
+          {/* Action Trigger Buttons */}
           <div className="my-8 flex items-center justify-center w-full">
             {currentStatus === "CLOCKEDOUT" ? (
               <div
                 onClick={handleClockIn}
+                disabled={isClockingIn}
                 className="w-56 h-56 rounded-full bg-emerald-50 text-emerald-600 border-2 border-emerald-200 shadow-xl shadow-emerald-100/40 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:bg-emerald-100/60 active:scale-[0.97]"
               >
                 <span className="text-4xl">⚡</span>
                 <h3 className="font-bold text-xl uppercase tracking-wider">
-                  Clock In
+                  {isClockingIn ? "Clocking In..." : "Clock In"}
                 </h3>
                 <p className="text-xs text-emerald-500/80 lowercase">
-                  start shift
+                  {isClockingIn ? "fetching status..." : "start shift"}
                 </p>
               </div>
             ) : (
               <div
                 onClick={handleClockOut}
+                disabled={isClockingOut}
                 className="w-56 h-56 rounded-full bg-rose-50 text-rose-600 border-2 border-rose-200 shadow-xl shadow-rose-100/40 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:bg-rose-100/60 active:scale-[0.97]"
               >
                 <span className="text-4xl">🛑</span>
                 <h3 className="font-bold text-xl uppercase tracking-wider">
-                  Clock Out
+                  {isClockingOut ? "Clocking Out..." : "Clock Out"}
                 </h3>
-                <p className="text-xs text-rose-500/80 lowercase">end shift</p>
+                <p className="text-xs text-rose-500/80 lowercase">
+                  {isClockingOut ? "saving data..." : "end shift"}
+                </p>
               </div>
             )}
           </div>
 
-          {/* 📝 Note Field Box: Completely Outside and Spacious */}
+          {/* Note Box */}
           <div className="w-full space-y-3">
             {currentStatus === "CLOCKEDOUT" ? (
               <div className="w-full">
@@ -154,7 +158,7 @@ export default function Punching() {
               </div>
             )}
 
-            {/* Current State Indicator Status Bar */}
+            {/* Current State Indicator Status */}
             <div className="pt-4 border-t border-slate-200/60 w-full mt-3">
               {currentStatus === "CLOCKEDIN" ? (
                 <span className="inline-flex items-center gap-1 text-rose-600 font-bold bg-rose-50 px-4 py-1.5 rounded-full text-xs border border-rose-100 uppercase tracking-wider animate-pulse">
@@ -169,7 +173,7 @@ export default function Punching() {
           </div>
         </div>
 
-        {/* ==================== RIGHT COLUMN: TIMELINE & LOGS ==================== */}
+        {/* RIGHT COLUMN: TIMELINE & LOGS */}
         <div className="flex-1 flex flex-col justify-between gap-6 mt-4 lg:mt-0">
           {/* Top Panel: Recent Activity Log Stream */}
           <div>
@@ -230,15 +234,14 @@ export default function Punching() {
             )}
           </div>
 
-          {/* Bottom Panel: Previous Attendance History Matrix Table (Sized up layout) */}
+          {/*  Previous Attendance History */}
           <div className="flex-1 flex flex-col justify-end">
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3 pl-0.5">
               Previous Attendance Logs
             </h3>
 
-            {/* 🟢 Table container expanded up to max-h-[420px] for laptops to show logs clearly */}
-            <div className="overflow-x-auto border border-slate-200/60 rounded-xl h-full max-h-[420px] min-h-[320px] overflow-y-auto shadow-inner bg-white">
-              <table className="w-full text-left border-collapse min-w-[500px]">
+            <div className="overflow-x-auto border border-slate-200/60 rounded-xl h-full max-h-105 min-h-80 overflow-y-auto shadow-inner bg-white">
+              <table className="w-full text-left border-collapse min-w-125">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-200/60 text-slate-400 font-bold text-xs uppercase tracking-wider sticky top-0 z-10">
                     <th className="p-4 pl-5">Date</th>

@@ -6,12 +6,6 @@ export async function GET(req) {
     const session = await auth0.getSession(req);
     const user = session?.user;
 
-    if (!user || !user.email) {
-      return NextResponse.json(
-        { success: false, message: "Unauthorized! Please login first." },
-        { status: 401 },
-      );
-    }
     const dbUser = await prisma.user.findUnique({
       where: { email: user.email },
       include: {
