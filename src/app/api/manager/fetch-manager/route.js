@@ -48,7 +48,7 @@ export async function GET(req) {
         success: true,
         message: "Manager details found..!!",
         dbUser,
-        locationPerimeter: fencingZone.locationPerimeter,
+        locationPerimeter: fencingZone,
       },
       { status: 200 },
     );
