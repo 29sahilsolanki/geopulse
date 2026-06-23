@@ -44,7 +44,7 @@ export async function PUT(req) {
     }
 
     const geoFencing = await prisma.locationPerimeter.upsert({
-      where: { managerId: dbUser.id },
+      where: { id: "e431e4a5-e8d2-4f80-a646-5e8b2b328d1b" },
       update: {
         locationName,
         latitude,

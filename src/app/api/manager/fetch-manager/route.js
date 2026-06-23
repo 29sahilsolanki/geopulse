@@ -19,7 +19,6 @@ export async function GET(req) {
 
     const dbUser = await prisma.user.findUnique({
       where: { email: user.email },
-      include: { locationPerimeter: true },
     });
 
     if (!dbUser || dbUser.role !== "MANAGER") {
@@ -32,12 +31,24 @@ export async function GET(req) {
       );
     }
 
+    const fencingZone = await prisma.locationPerimeter.findFirst();
+
+    if (!fencingZone) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "No active fencing zone found..!!",
+        },
+        { status: 404 },
+      );
+    }
+
     return NextResponse.json(
       {
         success: true,
         message: "Manager details found..!!",
         dbUser,
-        locationPerimeter: dbUser.locationPerimeter,
+        locationPerimeter: fencingZone.locationPerimeter,
       },
       { status: 200 },
     );
