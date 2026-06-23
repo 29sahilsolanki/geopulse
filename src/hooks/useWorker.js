@@ -16,9 +16,7 @@ const getAddressFromCoords = async (lat, lng) => {
   }
 };
 
-// -------------------------------------------------------------
-// 1️⃣ HOOK: Worker Details aur Shift History fetch karne ke liye
-// -------------------------------------------------------------
+// Fetch worker details
 export const useWorkerDetails = () => {
   return useQuery({
     queryKey: ["worker-details"],
@@ -26,7 +24,6 @@ export const useWorkerDetails = () => {
       const res = await axios.get("/api/worker/worker-details");
       return res.data;
     },
-    // select function se data ko pehle hi extract kar lete hain
     select: (data) => ({
       userData: data?.dbUser || null,
       shiftDetails: data?.shiftDetails || [],
@@ -34,9 +31,7 @@ export const useWorkerDetails = () => {
   });
 };
 
-// -------------------------------------------------------------
-// 2️⃣ MUTATION HOOK: Clock In (Shift Start) karne ke liye
-// -------------------------------------------------------------
+//punch clockin
 export const useClockIn = () => {
   const queryClient = useQueryClient();
 
@@ -54,7 +49,6 @@ export const useClockIn = () => {
     },
     onSuccess: (data) => {
       toast.success(data?.message || "Clocked In successfully!");
-      // 🔥 Cache refresh trigger: Shifts list instantly update hogi
       queryClient.invalidateQueries({ queryKey: ["worker-details"] });
     },
     onError: (error) => {
@@ -63,9 +57,7 @@ export const useClockIn = () => {
   });
 };
 
-// -------------------------------------------------------------
-// 3️⃣ MUTATION HOOK: Clock Out (Shift End) karne ke liye
-// -------------------------------------------------------------
+// punch clock out
 export const useClockOut = () => {
   const queryClient = useQueryClient();
 
@@ -91,9 +83,7 @@ export const useClockOut = () => {
   });
 };
 
-// -------------------------------------------------------------
-// 4️⃣ MUTATION HOOK: Worker profile details update karne ke liye
-// -------------------------------------------------------------
+// update worker details
 export const useUpdateWorkerDetails = () => {
   const queryClient = useQueryClient();
 
@@ -112,9 +102,7 @@ export const useUpdateWorkerDetails = () => {
   });
 };
 
-// -------------------------------------------------------------
-// 5️⃣ MUTATION HOOK: Profile Image avatar update karne ke liye
-// -------------------------------------------------------------
+//update worker profile image
 export const useUpdateProfileImage = () => {
   const queryClient = useQueryClient();
 
@@ -133,9 +121,7 @@ export const useUpdateProfileImage = () => {
   });
 };
 
-// -------------------------------------------------------------
-// 6️⃣ HOOK: Active Geofencing Zone fetch karne ke liye
-// -------------------------------------------------------------
+//fetch geo fencing zone
 export const useActiveZone = () => {
   return useQuery({
     queryKey: ["active-zone"],
@@ -143,7 +129,6 @@ export const useActiveZone = () => {
       const res = await axios.get("/api/worker/active-zone");
       return res.data;
     },
-    // fallback filter logic: jo bhi key backend se aaye, safely bind ho jaye
     select: (data) => data?.locationPerimeter || data?.activeLocation || null,
   });
 };
