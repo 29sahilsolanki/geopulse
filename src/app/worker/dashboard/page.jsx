@@ -48,12 +48,12 @@ export default function WorkerDashboard() {
           </p>
         </div>
 
-        {/* ==================== 🌟 FIXED PROFILE WIDGET FOR LAPTOPS ==================== */}
+        {/* ====================  PROFILE WIDGET FOR LAPTOPS ==================== */}
         <div className="flex items-center gap-3 lg:gap-4 bg-white border border-slate-200 rounded-2xl p-3 lg:p-4 shadow-sm w-fit sm:max-w-xs md:max-w-sm shrink-0 transition-all duration-200 hover:border-slate-300">
           <Image
             src={userData?.profilePic || "No image available"}
             alt="User Node"
-            width={44} // Laptop standard size optimized
+            width={44}
             height={44}
             unoptimized
             className="w-11 h-11 rounded-full border border-slate-200 object-cover shrink-0 shadow-sm"
@@ -307,11 +307,11 @@ export default function WorkerDashboard() {
               </span>
               <div>
                 <p className="text-sm font-bold text-slate-800">
-                  {activeLocation.name || "Main Site Perimeter"}
+                  {activeLocation.locationName || "Main Site Perimeter"}
                 </p>
                 <p className="text-[11px] text-slate-400 mt-0.5 max-w-xl">
-                  {activeLocation.address ||
-                    "Authorized operational boundaries active for your profile."}
+                  Operational coordinates: {activeLocation.latitude},{" "}
+                  {activeLocation.longitude}
                 </p>
               </div>
             </div>
@@ -322,8 +322,8 @@ export default function WorkerDashboard() {
                   Allowed Radius
                 </span>
                 <span className="font-bold text-slate-800">
-                  {activeLocation.radius
-                    ? `${activeLocation.radius} meters`
+                  {activeLocation.radiusMetre
+                    ? `${activeLocation.radiusMetre} meters`
                     : "N/A"}
                 </span>
               </div>
