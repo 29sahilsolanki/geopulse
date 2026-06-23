@@ -44,6 +44,6 @@ GeoPulse is a full-stack workforce management and automated attendance tracking 
 ### 1. Clone the Repository
 
 ```bash
-git clone [https://github.com/your-username/geopulse.git](https://github.com/your-username/geopulse.git)
+git clone [https://github.com//29sahilsolanki/geopulse.git](https://github.com//29sahilsolanki/geopulse.git)
 cd geopulse
 ```
