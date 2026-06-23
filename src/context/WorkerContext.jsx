@@ -130,6 +130,19 @@ export const WorkerProvider = ({ children }) => {
     updateImageMutation.mutate(formData, options);
   };
 
+  //--------------------Fetch Active Zone---------------------//
+  const { data: activeZoneData, isLoading: activeZoneLoading } = useQuery({
+    queryKey: ["active-zone"],
+    queryFn: async () => {
+      const url = "/api/worker/active-zone";
+      const res = await axios.get(url);
+      return res.data;
+    },
+  });
+
+  // Extract the location data
+  const activeLocation = activeZoneData?.activeLocation || null;
+
   //----------------------end file----------------------//
   return (
     <WorkerContext.Provider
@@ -145,6 +158,8 @@ export const WorkerProvider = ({ children }) => {
         isSavingDetails: updateDetailsMutation.isPending,
         updateProfileImage,
         isUploadingImage: updateImageMutation.isPending,
+        activeLocation,
+        activeZoneLoading,
       }}
     >
       {children}

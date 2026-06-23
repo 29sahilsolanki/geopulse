@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function WorkerDashboard() {
-  const { userData, shiftDetails } = useWorker();
+  const { userData, shiftDetails, activeLocation, activeZoneLoading } =
+    useWorker();
 
   const latestShift = shiftDetails?.[0];
   const currentStatus = latestShift?.status ?? "CLOCKEDOUT";
@@ -120,7 +121,7 @@ export default function WorkerDashboard() {
         </div>
       </div>
 
-      {/* Quick Links Section */}
+      {/* Quick Links & Attendance Split Section */}
       <div className="flex flex-col md:mt-5 lg:flex-row gap-6 items-stretch w-full">
         <div className="w-full lg:w-[42%] bg-slate-50/60 border border-slate-200/50 rounded-2xl p-5 flex flex-col justify-between gap-6">
           <div>
@@ -271,7 +272,7 @@ export default function WorkerDashboard() {
             )}
           </div>
 
-          {/* Detailed shift history */}
+          {/* Detailed shift history link */}
           <div className="text-right mt-4 border-t border-slate-50 pt-3">
             <Link
               href="/worker/shift-history"
@@ -281,6 +282,63 @@ export default function WorkerDashboard() {
             </Link>
           </div>
         </div>
+      </div>
+
+      {/*-------------------- CURRENT ACTIVE ZONE SECTION -------------------- */}
+      <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm w-full">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 pb-2 mb-4">
+          📍 Assigned Active Work Zone
+        </h3>
+
+        {activeZoneLoading ? (
+          <div className="text-center py-8 text-sm font-medium text-slate-400 animate-pulse">
+            Loading active zone parameters...
+          </div>
+        ) : !activeLocation ? (
+          <div className="text-center py-8 bg-slate-50 border border-dashed border-slate-200 rounded-xl text-slate-400 text-sm font-medium">
+            <span className="text-2xl block mb-1">🗺️</span>
+            No active work zone or perimeter has been assigned by management.
+          </div>
+        ) : (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50 border border-slate-100 p-4 rounded-xl">
+            <div className="flex items-start gap-3">
+              <span className="text-xl bg-emerald-50 text-emerald-600 p-2 rounded-lg border border-emerald-100 shrink-0">
+                🛡️
+              </span>
+              <div>
+                <p className="text-sm font-bold text-slate-800">
+                  {activeLocation.name || "Main Site Perimeter"}
+                </p>
+                <p className="text-[11px] text-slate-400 mt-0.5 max-w-xl">
+                  {activeLocation.address ||
+                    "Authorized operational boundaries active for your profile."}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4 sm:gap-6 border-t sm:border-t-0 border-slate-200/60 pt-3 sm:pt-0 shrink-0 font-mono text-xs text-slate-600">
+              <div>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Allowed Radius
+                </span>
+                <span className="font-bold text-slate-800">
+                  {activeLocation.radius
+                    ? `${activeLocation.radius} meters`
+                    : "N/A"}
+                </span>
+              </div>
+              <div>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Status
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 mt-0.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                  Active Secure
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
