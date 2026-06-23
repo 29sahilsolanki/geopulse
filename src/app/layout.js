@@ -2,7 +2,6 @@ import Footer from "@/components/common/Footer";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
 import { ManagerProvider } from "@/context/ManagerContext";
-import { WorkerProvider } from "@/context/WorkerContext";
 import ToastProvider from "@/lib/toastify";
 import QueryProvider from "./QueryProvider";
 export const metadata = {
