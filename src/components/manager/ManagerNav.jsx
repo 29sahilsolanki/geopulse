@@ -173,7 +173,7 @@ export default function ManagerNav() {
                 : "text-zinc-500 hover:text-white hover:bg-zinc-900/50"
             }`}
           >
-            <FiUser size={16} /> Manage Workers
+            <FiUser size={16} /> Profile
           </Link>
 
           <div className="pt-4 border-t border-zinc-900/60 flex items-center justify-between px-4">
