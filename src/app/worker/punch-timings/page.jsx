@@ -1,16 +1,15 @@
 "use client";
 
-import { useWorker } from "@/context/WorkerContext";
+import { useWorkerDetails, useClockIn, useClockOut } from "@/hooks/useWorker";
 import { useState, useEffect } from "react";
 
 export default function Punching() {
-  const {
-    punchClockIn,
-    isClockingIn,
-    punchClockOut,
-    isClockingOut,
-    shiftDetails,
-  } = useWorker();
+  const { data: workerData, isLoading: workerLoading } = useWorkerDetails();
+  const clockInMutation = useClockIn();
+  const clockOutMutation = useClockOut();
+
+  const shiftDetails = workerData?.shiftDetails || [];
+
   const [currentTime, setCurrentTime] = useState("");
   const [currentDate, setCurrentDate] = useState("");
   const [clockInNote, setClockInNote] = useState("");
@@ -18,6 +17,10 @@ export default function Punching() {
 
   const latestShift = shiftDetails?.[0];
   const currentStatus = latestShift?.status ?? "CLOCKEDOUT";
+
+  // Bind loading states directly from independent mutation handlers
+  const isClockingIn = clockInMutation.isPending;
+  const isClockingOut = clockOutMutation.isPending;
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -51,7 +54,9 @@ export default function Punching() {
           longitudeIn: position.coords.longitude,
           status: "CLOCKEDIN",
         };
-        punchClockIn(payload, {
+
+        // 🎯 Changed: Using mutation trigger with programmatic onSuccess reset overrides
+        clockInMutation.mutate(payload, {
           onSuccess: () => {
             setClockInNote("");
           },
@@ -72,7 +77,9 @@ export default function Punching() {
           longitudeOut: position.coords.longitude,
           status: "CLOCKEDOUT",
         };
-        punchClockOut(payload, {
+
+        // 🎯 Changed: Using mutation trigger with programmatic onSuccess reset overrides
+        clockOutMutation.mutate(payload, {
           onSuccess: () => {
             setClockOutNote("");
           },
@@ -83,6 +90,14 @@ export default function Punching() {
     );
   };
 
+  if (workerLoading) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center bg-slate-50">
+        <div className="w-10 h-10 border-4 border-emerald-500/20 border-t-emerald-600 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full min-h-screen bg-slate-50/50 pt-20 pb-5 px-3 md:px-8 flex items-start justify-center">
       <div className="max-w-7xl w-full bg-white border border-slate-200/80 rounded-3xl shadow-2xl p-4 md:p-8 flex flex-col lg:flex-row gap-8 items-stretch transition-all duration-300">
@@ -92,7 +107,6 @@ export default function Punching() {
             <p className="text-slate-400 text-xs md:text-sm font-bold uppercase tracking-wider">
               {currentDate || "Loading System Node..."}
             </p>
-            {/* 🎯 Fix: Mobile par clock thodi choti, bade desktop par vahi original text-5xl */}
             <h2 className="text-4xl md:text-5xl font-black font-mono tracking-tight text-slate-800 mt-2">
               {currentTime || "00:00:00"}
             </h2>
@@ -105,7 +119,6 @@ export default function Punching() {
                 type="button"
                 onClick={handleClockIn}
                 disabled={isClockingIn}
-                /* 🎯 Fix: appearance-none aur overflow-hidden se mobile standard round bounds set ho gaye */
                 className="w-56 h-56 rounded-full bg-emerald-50 text-emerald-600 border-2 border-emerald-200 shadow-xl shadow-emerald-100/40 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:bg-emerald-100/60 active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed appearance-none border-solid overflow-hidden outline-none"
               >
                 <span className="text-4xl">⚡</span>

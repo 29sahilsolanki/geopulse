@@ -1,12 +1,16 @@
 "use client";
 
-import { useWorker } from "@/context/WorkerContext";
+import { useWorkerDetails, useActiveZone } from "@/hooks/useWorker";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function WorkerDashboard() {
-  const { userData, shiftDetails, activeLocation, activeZoneLoading } =
-    useWorker();
+  const { data: workerData, isLoading: workerLoading } = useWorkerDetails();
+  const { data: activeLocation, isLoading: activeZoneLoading } =
+    useActiveZone();
+
+  const userData = workerData?.userData || null;
+  const shiftDetails = workerData?.shiftDetails || [];
 
   const latestShift = shiftDetails?.[0];
   const currentStatus = latestShift?.status ?? "CLOCKEDOUT";
@@ -35,6 +39,17 @@ export default function WorkerDashboard() {
   };
 
   const weeklyAverage = getWeeklyAverage();
+
+  if (workerLoading) {
+    return (
+      <div className="w-full min-h-screen bg-slate-50/30 flex flex-col items-center justify-center gap-3">
+        <div className="w-10 h-10 border-4 border-emerald-500/20 border-t-emerald-600 rounded-full animate-spin"></div>
+        <p className="text-xs font-bold font-mono tracking-wider text-slate-400 uppercase animate-pulse">
+          Syncing Core Worker Node...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-24 pb-8 px-4 md:px-8 max-w-7xl mx-auto w-full min-h-screen flex flex-col gap-6 text-slate-900">
@@ -86,7 +101,7 @@ export default function WorkerDashboard() {
           </div>
         </div>
 
-        {/* Card B: Shift Status Node Context */}
+        {/* Shift Status */}
         <div className="bg-white border border-slate-200/80 p-5 rounded-2xl shadow-sm flex items-center gap-4">
           <span className="text-2xl bg-slate-50 p-2.5 rounded-xl border border-slate-100 shadow-inner">
             ⏱️
@@ -311,7 +326,7 @@ export default function WorkerDashboard() {
                 </p>
                 {/* ==================== EXTERNAL MAPS LINK ==================== */}
                 <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${activeLocation.latitude},${activeLocation.longitude}`}
+                  href={`http://googleusercontent.com/maps.google.com/?q=${activeLocation.latitude},${activeLocation.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[11px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 px-2 py-0.5 rounded transition-colors"

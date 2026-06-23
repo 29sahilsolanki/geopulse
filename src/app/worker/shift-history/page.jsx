@@ -1,11 +1,13 @@
 "use client";
 
-import { useWorker } from "@/context/WorkerContext";
+import { useWorkerDetails } from "@/hooks/useWorker";
 import { useState } from "react";
 
 export default function ShiftHistory() {
-  const { shiftDetails } = useWorker();
+  const { data: workerData, isLoading: workerLoading } = useWorkerDetails();
   const [startIndex, setStartIndex] = useState(0);
+
+  const shiftDetails = workerData?.shiftDetails || [];
 
   // Weekly Average Login Duration Calculation
   const getWeeklyAverage = () => {
@@ -33,6 +35,14 @@ export default function ShiftHistory() {
   const weeklyAverage = getWeeklyAverage();
   const shiftHistory = shiftDetails || [];
   const currentRecords = shiftHistory.slice(startIndex, startIndex + 10);
+
+  if (workerLoading) {
+    return (
+      <div className="w-full max-w-6xl mt-20 flex items-center justify-center min-h-[50vh]">
+        <div className="w-10 h-10 border-4 border-emerald-500/20 border-t-emerald-600 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-6xl mt-20 flex flex-col gap-6">

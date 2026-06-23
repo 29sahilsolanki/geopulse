@@ -18,10 +18,8 @@ export default function RootLayout({ children }) {
         <QueryProvider>
           <ToastProvider>
             <ManagerProvider>
-              <WorkerProvider>
-                {children}
-                <Footer />
-              </WorkerProvider>
+              {children}
+              <Footer />
             </ManagerProvider>
           </ToastProvider>
         </QueryProvider>

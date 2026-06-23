@@ -1,6 +1,7 @@
 "use client";
 
-import { useWorker } from "@/context/WorkerContext";
+// 🎯 Changed: Imported our brand new React Query custom hook
+import { useWorkerDetails } from "@/hooks/useWorker";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
@@ -16,7 +17,10 @@ import {
 } from "react-icons/fi";
 
 export default function WorkerNav() {
-  const { userData } = useWorker();
+  const { data: workerData } = useWorkerDetails();
+
+  const userData = workerData?.userData || null;
+
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -133,7 +137,7 @@ export default function WorkerNav() {
             onClick={() => setIsOpen(false)}
             className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-bold font-mono uppercase tracking-wide ${
               pathname === "/worker/dashboard"
-                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                ? "bg-emerald-50/10 text-emerald-400 border border-emerald-500/20"
                 : "text-zinc-500 hover:text-white hover:bg-zinc-900/50"
             }`}
           >
@@ -145,7 +149,7 @@ export default function WorkerNav() {
             onClick={() => setIsOpen(false)}
             className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-bold font-mono uppercase tracking-wide ${
               pathname === "/worker/punch-timings"
-                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                ? "bg-emerald-50/10 text-emerald-400 border border-emerald-500/20"
                 : "text-zinc-500 hover:text-white hover:bg-zinc-900/50"
             }`}
           >
@@ -157,7 +161,7 @@ export default function WorkerNav() {
             onClick={() => setIsOpen(false)}
             className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-bold font-mono uppercase tracking-wide ${
               pathname === "/worker/shift-history"
-                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                ? "bg-emerald-50/10 text-emerald-400 border border-emerald-500/20"
                 : "text-zinc-500 hover:text-white hover:bg-zinc-900/50"
             }`}
           >
@@ -169,7 +173,7 @@ export default function WorkerNav() {
             onClick={() => setIsOpen(false)}
             className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-sm font-bold font-mono uppercase tracking-wide ${
               pathname === "/worker/profile"
-                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                ? "bg-emerald-50/10 text-emerald-400 border border-emerald-500/20"
                 : "text-zinc-500 hover:text-white hover:bg-zinc-900/50"
             }`}
           >
@@ -178,7 +182,7 @@ export default function WorkerNav() {
 
           <div className="pt-4 border-t border-zinc-900/60 flex items-center justify-between px-4">
             <span className="text-[9px] font-mono tracking-widest text-emerald-500 bg-emerald-500/5 px-2 py-1 rounded border border-emerald-500/10">
-              {`Hello: ${userData.name || "Loading..."}`}
+              {`Hello: ${userData?.name || "Loading..."}`}
             </span>
             <button
               onClick={handleLogout}

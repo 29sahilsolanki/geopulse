@@ -4,7 +4,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-// 🌍 Helper function: Coordinates se address text nikalne ke liye
 const getAddressFromCoords = async (lat, lng) => {
   try {
     const res = await axios.get(

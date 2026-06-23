@@ -1,20 +1,25 @@
 "use client";
 
-import { useWorker } from "@/context/WorkerContext";
+import {
+  useWorkerDetails,
+  useUpdateWorkerDetails,
+  useUpdateProfileImage,
+} from "@/hooks/useWorker";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { FiEdit } from "react-icons/fi";
 import { RxCross1 } from "react-icons/rx";
 
 export default function Profile() {
-  const {
-    userData,
-    workerLoading,
-    updateWorkerDetails,
-    isSavingDetails,
-    updateProfileImage,
-    isUploadingImage,
-  } = useWorker();
+  const { data: workerData, isLoading: workerLoading } = useWorkerDetails();
+  const updateWorkerDetailsMutation = useUpdateWorkerDetails();
+  const updateProfileImageMutation = useUpdateProfileImage();
+
+  const userData = workerData?.userData || null;
+
+  const isSavingDetails = updateWorkerDetailsMutation.isPending;
+  const isUploadingImage = updateProfileImageMutation.isPending;
+
   const [editImage, setEditImage] = useState(false);
   const [image, setImage] = useState(null);
   const [editDetails, setEditDetails] = useState(false);
@@ -23,6 +28,7 @@ export default function Profile() {
     department: "",
     phone: "",
   });
+
   useEffect(() => {
     if (userData) {
       setDetails({
@@ -36,9 +42,7 @@ export default function Profile() {
   if (workerLoading) {
     return (
       <div className="min-h-screen w-full flex items-center justify-center bg-slate-50">
-        <p className="text-slate-400 text-sm font-semibold tracking-wider uppercase animate-pulse">
-          Loading profile...
-        </p>
+        <div className="w-10 h-10 border-4 border-emerald-500/20 border-t-emerald-600 rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -62,7 +66,7 @@ export default function Profile() {
     : "--";
 
   const handleSaveDetails = () => {
-    updateWorkerDetails(details, {
+    updateWorkerDetailsMutation.mutate(details, {
       onSuccess: () => {
         setEditDetails(false);
       },
@@ -72,7 +76,8 @@ export default function Profile() {
   const handleSaveImage = () => {
     const formData = new FormData();
     formData.append("image", image);
-    updateProfileImage(formData, {
+
+    updateProfileImageMutation.mutate(formData, {
       onSuccess: () => {
         setEditImage(false);
         setImage(null);
