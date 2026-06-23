@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 📍 GeoPulse EMS
 
-## Getting Started
+GeoPulse is a full-stack workforce management and automated attendance tracking system powered by next-generation location intelligence. It utilizes strict geofencing parameters to ensure remote or on-site workers can only clock in/out if their device coordinates fall within the assigned manager perimeter.
 
-First, run the development server:
+---
+
+## 🛠️ Technology Stack & Architecture
+
+- **Framework:** Next.js 16 (App Router)
+- **Database ORM:** Prisma Client with relational connection pooling
+- **Authentication:** Auth0 Identity Engine (`@auth0/nextjs-auth0`)
+- **Mapping & Geofencing:** React Leaflet & OpenStreetMap (Nominatim Reverse Geocoding API)
+- **Mathematical Engine:** Haversine Formula for absolute spatial radius verification
+- **Styling UI:** Tailwind CSS v4 + React Icons
+- **Data Visualization:** Chart.js with React Chartjs 2 (Doughnut distribution mix)
+- **State Management:** React Context API & TanStack React Query
+
+---
+
+## 🚀 Key System Features
+
+- **Secure Handshake Authentication:** Protected route layers dividing access control streams securely between `MANAGER` and `WORKER` nodes.
+- **Interactive Geofence Panel:** Live manager configurations capable of dropping anchor coordinates and adjusting permitted metric radiuses directly on a Leaflet map.
+- **Asli-Time Roster Streams:** Live worker logs dashboard sorting shift states dynamically using an implicit `clockIn: "desc"` database order.
+- **One-Tap Browser Locator:** Native browser GPS synchronization with automated address lookup fallback layers.
+- **Progressive Web App (PWA):** Built-in custom standalone manifest configuration for instant desktop and mobile installations.
+
+---
+
+## 📊 Quick Execution Script Matrix
+
+| Execution Intent      | Command Script        | Target Mode / Runtime Status          |
+| :-------------------- | :-------------------- | :------------------------------------ |
+| **Install Packages**  | `npm install`         | Setup Initialization & Chunks Pull    |
+| **Prisma Generation** | `npx prisma generate` | DB Schema Client Compilation          |
+| **Local Development** | `npm run dev`         | Dev Run (With Engine Hot Reloading)   |
+| **Production Build**  | `npm run build`       | Optimized Code Standalone Compilation |
+| **Production Start**  | `npm run start`       | Local Production Server Live Boot up  |
+
+---
+
+## 📦 Getting Started & Local Setup
+
+### 1. Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone [https://github.com/your-username/geopulse.git](https://github.com/your-username/geopulse.git)
+cd geopulse
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
