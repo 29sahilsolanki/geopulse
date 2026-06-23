@@ -17,6 +17,16 @@ GeoPulse is a full-stack workforce management and automated attendance tracking 
 
 ---
 
+### 🧠 State Management Architecture
+
+To demonstrate deep proficiency across multiple state paradigms, this project deliberately utilizes a hybrid approach:
+
+- _React Context API (Global UI State):_ Used for managing local, synchronous application states such as the ManagerContext to store layout states, immediate active UI tracking, and cross-component toggle triggers without external dependencies. This strictly fulfills the assignment's baseline requirement.
+
+- _React Query (Server-State Lifecycle):_ Implemented specifically for the Care Worker tracking data to handle complex server-cache synchronizations, optimistic updates during clock-ins, automatic background re-fetching for active shift logs, and seamless error handling.
+
+---
+
 ## 🚀 Key System Features
 
 - **Secure Handshake Authentication:** Protected route layers dividing access control streams securely between `MANAGER` and `WORKER` nodes.
