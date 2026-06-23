@@ -8,6 +8,7 @@ import QueryProvider from "./QueryProvider";
 export const metadata = {
   title: "GeoPulse",
   description: "Manage or track employees",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({ children }) {
