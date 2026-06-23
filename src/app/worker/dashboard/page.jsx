@@ -326,7 +326,7 @@ export default function WorkerDashboard() {
                 </p>
                 {/* ==================== EXTERNAL MAPS LINK ==================== */}
                 <a
-                  href={`http://googleusercontent.com/maps.google.com/?q=${activeLocation.latitude},${activeLocation.longitude}`}
+                  href={`https://www.google.com/maps/search/?api=1&query=${activeLocation.latitude},${activeLocation.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-[11px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 px-2 py-0.5 rounded transition-colors"
